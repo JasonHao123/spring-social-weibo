@@ -15,10 +15,13 @@
 */
 package org.springframework.social.weibo.api.impl;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.springframework.social.oauth2.OAuth2Parameters;
+import org.springframework.social.support.ParameterMap;
 import org.springframework.social.weibo.api.CursoredList;
 import org.springframework.social.weibo.api.FriendOperations;
 import org.springframework.social.weibo.api.WeiboProfile;
@@ -29,20 +32,37 @@ import org.springframework.web.client.RestTemplate;
 class FriendTemplate extends AbstractWeiboOperations implements
 		FriendOperations {
 
-	protected FriendTemplate(ObjectMapper objectMapper,
-			RestTemplate restTemplate, boolean isAuthorized) {
+	private String accessToken;
+
+    protected FriendTemplate(ObjectMapper objectMapper,
+			RestTemplate restTemplate, boolean isAuthorized, String accessToken) {
 		super(objectMapper, restTemplate, isAuthorized);
+		this.accessToken = accessToken;
 	}
 
 	@Override
 	public CursoredList<WeiboProfile> getFriends(String uid) {
 		requireAuthorization();
-
+		OAuth2Parameters parameters = new OAuth2Parameters();
+		parameters.put("uid",Arrays.asList(uid));
+		parameters.put("access_token",Arrays.asList(accessToken));
 		JsonNode dataNode = restTemplate.getForObject(
-				buildUri("friendships/friends.json", "uid",uid),
+				buildUri("friendships/friends.json", parameters),
 				JsonNode.class);
 		return deserializeCursoredList(dataNode, WeiboProfile.class, "users");
 	}
+	
+	   @Override
+	    public CursoredList<WeiboProfile> getFriendsByDisplayName(String uid) {
+	        requireAuthorization();
+	        OAuth2Parameters parameters = new OAuth2Parameters();
+	        parameters.put("screen_name",Arrays.asList(uid));
+	        parameters.put("access_token",Arrays.asList(accessToken));
+	        JsonNode dataNode = restTemplate.getForObject(
+	                buildUri("friendships/friends.json", parameters),
+	                JsonNode.class);
+	        return deserializeCursoredList(dataNode, WeiboProfile.class, "users");
+	    }
 
 	@Override
 	public CursoredList<WeiboProfile> getFollowers(String uid) {
@@ -58,6 +78,20 @@ class FriendTemplate extends AbstractWeiboOperations implements
         requireAuthorization();
         MultiValueMap<String, String> parameters = new LinkedMultiValueMap<String, String>();
           parameters.set("uid", uid);
+          parameters.set("cursor", cursor);
+        //  parameters.set("count", "50");
+      JsonNode dataNode = restTemplate.getForObject(
+              buildUri("friendships/friends.json", parameters),
+              JsonNode.class);
+      return deserializeCursoredList(dataNode, WeiboProfile.class, "users");
+    }
+    
+    
+    @Override
+    public List<WeiboProfile> getFriendsByDisplayName(String uid, String cursor) {
+        requireAuthorization();
+        MultiValueMap<String, String> parameters = new LinkedMultiValueMap<String, String>();
+          parameters.set("screen_name", uid);
           parameters.set("cursor", cursor);
         //  parameters.set("count", "50");
       JsonNode dataNode = restTemplate.getForObject(

@@ -36,7 +36,7 @@ public class FriendTemplateTest extends AbstractWeiboOperationsTest {
 		String uid = "uid";
 		mockServer
 				.expect(requestTo("https://api.weibo.com/2/friendships/friends.json?uid="
-						+ uid))
+						+ uid+"&access_token=test"))
 				.andExpect(method(GET))
 				.andRespond(
 						withResponse(jsonResource("friends"), responseHeaders));
@@ -50,7 +50,7 @@ public class FriendTemplateTest extends AbstractWeiboOperationsTest {
 	@Override
 	public void setUp() {
 		friendTemplate = new FriendTemplate(getObjectMapper(),
-				getRestTemplate(), true);
+				getRestTemplate(), true,"test");
 	}
 
 }

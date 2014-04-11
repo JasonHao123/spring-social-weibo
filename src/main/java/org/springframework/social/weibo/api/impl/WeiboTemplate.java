@@ -16,8 +16,8 @@
 package org.springframework.social.weibo.api.impl;
 
 import org.codehaus.jackson.map.ObjectMapper;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJacksonHttpMessageConverter;
+import org.springframework.social.http.converter.MappingJacksonHttpMessageConverterJackson;
 import org.springframework.social.oauth2.AbstractOAuth2ApiBinding;
 import org.springframework.social.oauth2.OAuth2Version;
 import org.springframework.social.support.ClientHttpRequestFactorySelector;
@@ -30,7 +30,7 @@ import org.springframework.social.weibo.api.impl.json.WeiboModule;
 import org.springframework.web.client.RestTemplate;
 
 public class WeiboTemplate extends AbstractOAuth2ApiBinding implements Weibo {
-
+    private String accessToken;
 	private AccountOperations accountOperations;
 
 	private UserOperations userOperations;
@@ -43,6 +43,7 @@ public class WeiboTemplate extends AbstractOAuth2ApiBinding implements Weibo {
 
 	public WeiboTemplate(String accessToken) {
 		super(accessToken);
+		this.accessToken = accessToken;
 		initialize();
 	}
 
@@ -58,7 +59,7 @@ public class WeiboTemplate extends AbstractOAuth2ApiBinding implements Weibo {
 
 	@Override
 	protected MappingJacksonHttpMessageConverter getJsonMessageConverter() {
-		MappingJacksonHttpMessageConverter converter = new MappingJacksonHttpMessageConverter();
+		MappingJacksonHttpMessageConverterJackson converter = new MappingJacksonHttpMessageConverterJackson();
 		objectMapper = new ObjectMapper();
 		objectMapper.registerModule(new WeiboModule());
 		converter.setObjectMapper(objectMapper);
@@ -81,7 +82,7 @@ public class WeiboTemplate extends AbstractOAuth2ApiBinding implements Weibo {
 		this.timelineOperations = new TimelineTemplate(objectMapper,
 				getRestTemplate(), isAuthorized());
 		this.friendOperations = new FriendTemplate(objectMapper,
-				getRestTemplate(), isAuthorized());
+				getRestTemplate(), isAuthorized(),accessToken);
 	}
 
 	@Override
