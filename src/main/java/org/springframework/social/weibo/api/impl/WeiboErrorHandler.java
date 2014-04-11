@@ -49,7 +49,7 @@ public class WeiboErrorHandler extends DefaultResponseErrorHandler {
 		try {
 			super.handleError(response);
 		} catch (Exception e) {
-			throw new UncategorizedApiException(
+			throw new UncategorizedApiException("Weibo",
 					"Error consuming Weibo REST API", e);
 		}
 	}
@@ -73,9 +73,9 @@ public class WeiboErrorHandler extends DefaultResponseErrorHandler {
 			errorCode = (Integer) errorMap.get("error_code");
 			switch (errorCode) {
 			case 21327:
-				throw new ExpiredAuthorizationException();
+				throw new ExpiredAuthorizationException("Weibo");
 			default:
-				throw new UncategorizedApiException(String.format(
+				throw new UncategorizedApiException("Weibo",String.format(
 						"Error calling weibo: error code=%d, error message=%s",
 						errorCode, errorMap.get("error")),
 						new RestClientException("Unknown status code ["
@@ -86,12 +86,12 @@ public class WeiboErrorHandler extends DefaultResponseErrorHandler {
 
 	private void handleServerErrors(HttpStatus statusCode) throws IOException {
 		if (statusCode == HttpStatus.INTERNAL_SERVER_ERROR) {
-			throw new InternalServerErrorException(
+			throw new InternalServerErrorException("Weibo",
 					"Something is broken at Weibo.");
 		} else if (statusCode == HttpStatus.BAD_GATEWAY) {
-			throw new ServerDownException("Weibo is down or is being upgraded.");
+			throw new ServerDownException("Weibo","Weibo is down or is being upgraded.");
 		} else if (statusCode == HttpStatus.SERVICE_UNAVAILABLE) {
-			throw new ServerOverloadedException(
+			throw new ServerOverloadedException("Weibo",
 					"Weibo is overloaded with requests. Try again later.");
 		}
 	}

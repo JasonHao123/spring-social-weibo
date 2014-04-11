@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.springframework.social</groupId>
 	<artifactId>spring-social-weibo</artifactId>
-	<version>1.0.1-SNAPSHOT</version>
+	<version>1.0.0.JASON</version>
 	<name>Spring Social Weibo extension</name>
 	
 	<repositories>
@@ -34,26 +34,72 @@
 	<properties>
 		<java-version>1.6</java-version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<org.springframework.social-version>1.0.2.RELEASE</org.springframework.social-version>
+        <org.springframework-version>4.0.2.RELEASE</org.springframework-version>
+		<org.springframework.social-version>1.1.0.RC1</org.springframework.social-version>
 	</properties>
 
 	<dependencies>
+  <dependency>
+  <artifactId>spring-web</artifactId>
+          <groupId>org.springframework</groupId>
+          <version>${org.springframework-version}</version>
+  </dependency>
+   
 		<dependency>
 			<groupId>org.codehaus.jackson</groupId>
 			<artifactId>jackson-mapper-asl</artifactId>
 			<version>1.9.2</version>
 			<scope>compile</scope>
 		</dependency>
+
+     <dependency>
+    <groupId>com.fasterxml.jackson.core</groupId>
+    <artifactId>jackson-core</artifactId>
+    <version>2.3.0</version>
+</dependency>
+ <dependency>
+    <groupId>com.fasterxml.jackson.core</groupId>
+    <artifactId>jackson-databind</artifactId>
+    <version>2.3.0</version>
+</dependency>
 		<dependency>
 			<groupId>org.springframework.social</groupId>
 			<artifactId>spring-social-core</artifactId>
 			<version>${org.springframework.social-version}</version>
+			<exclusions>
+			  <exclusion>
+			    <artifactId>spring-web</artifactId>
+			    <groupId>org.springframework</groupId>
+			  </exclusion>
+			</exclusions>
 		</dependency>
+    
+        <dependency>
+      <groupId>org.springframework.social</groupId>
+      <artifactId>spring-social-security</artifactId>
+      <version>${org.springframework.social-version}</version>
+    </dependency>
+            <dependency>
+      <groupId>org.springframework.social</groupId>
+      <artifactId>spring-social-config</artifactId>
+      <version>${org.springframework.social-version}</version>
+    </dependency>
+    <dependency>
+    <groupId>javax.servlet</groupId>
+    <artifactId>servlet-api</artifactId>
+    <version>2.5</version>
+</dependency>
 		<dependency>
 			<groupId>org.springframework.social</groupId>
 			<artifactId>spring-social-test</artifactId>
-			<version>${org.springframework.social-version}</version>
+			<version>1.0.3.RELEASE</version>
 			<scope>test</scope>
+			<exclusions>
+			  <exclusion>
+			    <artifactId>spring-web</artifactId>
+			    <groupId>org.springframework</groupId>
+			  </exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>

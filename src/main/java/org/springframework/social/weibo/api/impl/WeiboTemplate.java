@@ -15,27 +15,15 @@
  */
 package org.springframework.social.weibo.api.impl;
 
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.codehaus.jackson.map.ObjectMapper;
-import org.springframework.http.MediaType;
-import org.springframework.http.converter.ByteArrayHttpMessageConverter;
-import org.springframework.http.converter.FormHttpMessageConverter;
-import org.springframework.http.converter.HttpMessageConverter;
-import org.springframework.http.converter.ResourceHttpMessageConverter;
-import org.springframework.http.converter.StringHttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJacksonHttpMessageConverter;
 import org.springframework.social.oauth2.AbstractOAuth2ApiBinding;
 import org.springframework.social.oauth2.OAuth2Version;
 import org.springframework.social.support.ClientHttpRequestFactorySelector;
 import org.springframework.social.weibo.api.AccountOperations;
-import org.springframework.social.weibo.api.CommentOperations;
-import org.springframework.social.weibo.api.FavoriteOperations;
 import org.springframework.social.weibo.api.FriendOperations;
 import org.springframework.social.weibo.api.TimelineOperations;
-import org.springframework.social.weibo.api.TrendOperations;
 import org.springframework.social.weibo.api.UserOperations;
 import org.springframework.social.weibo.api.Weibo;
 import org.springframework.social.weibo.api.impl.json.WeiboModule;
@@ -45,8 +33,6 @@ public class WeiboTemplate extends AbstractOAuth2ApiBinding implements Weibo {
 
 	private AccountOperations accountOperations;
 
-	private CommentOperations commentOperations;
-
 	private UserOperations userOperations;
 
 	private TimelineOperations timelineOperations;
@@ -54,10 +40,6 @@ public class WeiboTemplate extends AbstractOAuth2ApiBinding implements Weibo {
 	private FriendOperations friendOperations;
 
 	private ObjectMapper objectMapper;
-
-	private FavoriteTemplate favouriteOperations;
-
-	private TrendTemplate trendOperations;
 
 	public WeiboTemplate(String accessToken) {
 		super(accessToken);
@@ -76,32 +58,11 @@ public class WeiboTemplate extends AbstractOAuth2ApiBinding implements Weibo {
 
 	@Override
 	protected MappingJacksonHttpMessageConverter getJsonMessageConverter() {
-		MappingJacksonHttpMessageConverter converter = super
-				.getJsonMessageConverter();
+		MappingJacksonHttpMessageConverter converter = new MappingJacksonHttpMessageConverter();
 		objectMapper = new ObjectMapper();
 		objectMapper.registerModule(new WeiboModule());
 		converter.setObjectMapper(objectMapper);
 		return converter;
-	}
-
-	@Override
-	protected FormHttpMessageConverter getFormMessageConverter() {
-		FormHttpMessageConverter messageConverter = super
-				.getFormMessageConverter();
-		List<HttpMessageConverter<?>> partConverters = new ArrayList<HttpMessageConverter<?>>(
-				3);
-		partConverters.add(new ByteArrayHttpMessageConverter());
-		StringHttpMessageConverter stringHttpMessageConverter = new StringHttpMessageConverter();
-		List<MediaType> mediaTypes = new ArrayList<MediaType>(2);
-		mediaTypes
-				.add(new MediaType("text", "plain", Charset.forName("UTF-8")));
-		mediaTypes.add(MediaType.ALL);
-		stringHttpMessageConverter.setSupportedMediaTypes(mediaTypes);
-		stringHttpMessageConverter.setWriteAcceptCharset(false);
-		partConverters.add(stringHttpMessageConverter);
-		partConverters.add(new ResourceHttpMessageConverter());
-		messageConverter.setPartConverters(partConverters);
-		return messageConverter;
 	}
 
 	private void initialize() {
@@ -121,12 +82,6 @@ public class WeiboTemplate extends AbstractOAuth2ApiBinding implements Weibo {
 				getRestTemplate(), isAuthorized());
 		this.friendOperations = new FriendTemplate(objectMapper,
 				getRestTemplate(), isAuthorized());
-		this.commentOperations = new CommentTemplate(objectMapper,
-				getRestTemplate(), isAuthorized());
-		this.favouriteOperations = new FavoriteTemplate(objectMapper,
-				getRestTemplate(), isAuthorized());
-		this.trendOperations = new TrendTemplate(objectMapper,
-				getRestTemplate(), isAuthorized());
 	}
 
 	@Override
@@ -145,11 +100,6 @@ public class WeiboTemplate extends AbstractOAuth2ApiBinding implements Weibo {
 	}
 
 	@Override
-	public CommentOperations commentOperations() {
-		return commentOperations;
-	}
-
-	@Override
 	public TimelineOperations timelineOperations() {
 		return timelineOperations;
 	}
@@ -161,16 +111,6 @@ public class WeiboTemplate extends AbstractOAuth2ApiBinding implements Weibo {
 
 	protected ObjectMapper getObjectMapper() {
 		return objectMapper;
-	}
-
-	@Override
-	public FavoriteOperations favoriteOperations() {
-		return favouriteOperations;
-	}
-
-	@Override
-	public TrendOperations trendOperations() {
-		return trendOperations;
 	}
 
 }

@@ -2,7 +2,7 @@
 	"statuses" : [{
 			"created_at" : "Tue May 31 17:46:55 +0800 2011",
 			"id" : 11488058246,
-			"text" : "你好",
+			"text" : "weibo from Beijing",
 			"source" : "<a href=\"http://weibo.com\" rel=\"nofollow\">Sina microblogging</a>",
 			"favorited" : false,
 			"truncated" : false,
@@ -96,6 +96,6 @@
 		}
 	],
 	"previous_cursor" : 0,
-	"next_cursor" : 1,
+	"next_cursor" : 11488013766,
 	"total_number" : 81655
 }

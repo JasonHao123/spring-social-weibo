@@ -16,6 +16,7 @@
 package org.springframework.social.weibo.connect;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -38,14 +39,17 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 public class WeiboOAuth2Template extends OAuth2Template {
-
+    private String clientId;
+    private String clientSecret;
 	private static final Log logger = LogFactory
 			.getLog(WeiboOAuth2Template.class.getName());
 
 	public WeiboOAuth2Template(String clientId, String clientSecret) {
 		super(clientId, clientSecret,
-				"https://api.t.sina.com.cn/oauth2/authorize",
-				"https://api.t.sina.com.cn/oauth2/access_token");
+				"https://api.weibo.com/oauth2/authorize",
+				"https://api.weibo.com/oauth2/access_token");
+		this.clientId = clientId;
+		this.clientSecret = clientSecret;
 	}
 
 	@Override
@@ -89,15 +93,17 @@ public class WeiboOAuth2Template extends OAuth2Template {
 	@SuppressWarnings("unchecked")
 	protected AccessGrant postForAccessGrant(String accessTokenUrl,
 			MultiValueMap<String, String> parameters) {
+	    parameters.put("client_id", Arrays.asList(new String[]{this.clientId}));
+	    parameters.put("client_secret", Arrays.asList(new String[]{this.clientSecret}));
 		MultiValueMap<String, String> response = getRestTemplate()
-				.postForObject(accessTokenUrl, parameters, MultiValueMap.class);
+				.postForObject(accessTokenUrl, parameters, MultiValueMap.class,"test");
 		String expires = response.getFirst("expires_in");
 		String accessToken = response.getFirst("access_token");
 		if (logger.isDebugEnabled()) {
 			logger.debug("access token value = " + accessToken);
 		}
 		return new AccessGrant(accessToken, null, null,
-				expires != null ? Integer.valueOf(expires) : null);
+				expires != null ? Long.valueOf(expires) : null);
 	}
 
 }
