@@ -58,6 +58,7 @@ class FriendTemplate extends AbstractWeiboOperations implements
 	        OAuth2Parameters parameters = new OAuth2Parameters();
 	        parameters.put("screen_name",Arrays.asList(uid));
 	        parameters.put("access_token",Arrays.asList(accessToken));
+	        parameters.set("count", "2");
 	        JsonNode dataNode = restTemplate.getForObject(
 	                buildUri("friendships/friends.json", parameters),
 	                JsonNode.class);
@@ -88,12 +89,12 @@ class FriendTemplate extends AbstractWeiboOperations implements
     
     
     @Override
-    public List<WeiboProfile> getFriendsByDisplayName(String uid, String cursor) {
+    public CursoredList<WeiboProfile> getFriendsByDisplayName(String uid, String cursor) {
         requireAuthorization();
         MultiValueMap<String, String> parameters = new LinkedMultiValueMap<String, String>();
           parameters.set("screen_name", uid);
           parameters.set("cursor", cursor);
-        //  parameters.set("count", "50");
+          parameters.set("count", "2");
       JsonNode dataNode = restTemplate.getForObject(
               buildUri("friendships/friends.json", parameters),
               JsonNode.class);

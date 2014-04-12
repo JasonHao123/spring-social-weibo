@@ -27,6 +27,6 @@ public interface FriendOperations {
     
     CursoredList<WeiboProfile> getFriendsByDisplayName(String uid);
 
-    List<WeiboProfile> getFriendsByDisplayName(String userId, String cursor);
+    CursoredList<WeiboProfile> getFriendsByDisplayName(String userId, String cursor);
 
 }

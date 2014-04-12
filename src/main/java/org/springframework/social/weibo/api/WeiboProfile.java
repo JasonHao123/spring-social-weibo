@@ -17,13 +17,16 @@ package org.springframework.social.weibo.api;
 
 import java.util.Date;
 
+import org.springframework.social.http.converter.JacksonConverterTypes;
+import org.springframework.social.http.converter.MappingJacksonType;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * A data class representing Basic user information element
  */
-@JsonIgnoreProperties(ignoreUnknown = true)
+@MappingJacksonType(convertType=JacksonConverterTypes.Jackson)
 public class WeiboProfile {
 	private boolean allowAllActMsg; // 是否允许所有人给我发私信
 	private boolean allowAllComment; // 是否允许所有人对我的微博进行评论
@@ -45,7 +48,6 @@ public class WeiboProfile {
 	private int onlineStatus; // 用户在线状态
 	private String profileImageUrl; // 自定义图像
 	private int province; // 省份编码（参考省份编码表）
-	@JsonProperty("screen_name")
 	private String screenName; // 微博昵称
 	private Status status = null; // 用户最新一条微博
 	private int statusesCount; // 微博数
